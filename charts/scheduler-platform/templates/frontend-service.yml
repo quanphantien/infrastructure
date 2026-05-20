@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Release.Name }}-frontend-service"
+  labels:
+    app: frontend
+spec:
+  type: ClusterIP  # Keeps the frontend secure inside the cluster network
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 80         # The front door of the frontend service
+      targetPort: {{ .Values.frontend.port }} # Maps to port 80 inside the container
