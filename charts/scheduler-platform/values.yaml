@@ -1,13 +1,13 @@
-# national-twin-platform/values.yaml
+# first-frontend/values.yaml
 
 backend:
-  repository: registry01.azurecr.io/first-back-end
+  repository: registry01.azurecr.io/first-backend
   tag: "v01"
   replicaCount: 2
   port: 8000
 
 frontend:
-  repository: registry01.azurecr.io/first-website
+  repository: registry01.azurecr.io/first-frontend
   tag: "v01"
   replicaCount: 2
   port: 80

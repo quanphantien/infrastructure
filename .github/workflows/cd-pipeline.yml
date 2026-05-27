@@ -1,0 +1,42 @@
+# Inside your national-twin-iac repository workflow
+on:
+  repository_dispatch:
+    types: [ rollout-new-frontend, rollout-new-backend ] # Listens to both apps
+
+jobs:
+  kubernetes-rollout:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Infrastructure Code
+        uses: actions/checkout@v4
+
+      - name: Authenticate with Azure CLI
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set Target AKS Context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: "website-rg"
+          cluster-name: "first-system"
+
+      - name: Install Helm Binaries
+        uses: azure/setup-helm@v4
+        with:
+          version: 'v3.14.0'
+
+      # Dynamically intercepts which repository sent the signal and targets the correct override
+      - name: Execute Automated Helm Upgrade
+        run: |
+          if [ "${{ github.event.action }}" == "rollout-new-frontend" ]; then
+            echo "Deploying Frontend Version: ${{ github.event.client_payload.tag }}"
+            helm upgrade --install sheduler-platform ./charts/sheduler-platform \
+              --reuse-values \
+              --set frontend.tag="${{ github.event.client_payload.tag }}"
+          elif [ "${{ github.event.action }}" == "rollout-new-backend" ]; then
+            echo "Deploying Backend Version: ${{ github.event.client_payload.tag }}"
+            helm upgrade --install sheduler-platform ./charts/sheduler-platform \
+              --reuse-values \
+              --set backend.tag="${{ github.event.client_payload.tag }}"
+          fi

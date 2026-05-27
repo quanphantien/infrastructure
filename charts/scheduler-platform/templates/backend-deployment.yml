@@ -19,3 +19,30 @@ spec:
         image: "{{ .Values.backend.repository }}:{{ .Values.backend.tag }}"
         ports:
         - containerPort: {{ .Values.backend.port }}
+        env:
+        # Map each variable directly from the cluster secret vault
+        - name: PGHOST
+          valueFrom:
+            secretKeyRef:
+              name: backend-db-secrets
+              key: DB_HOST
+        - name: PGUSER
+          valueFrom:
+            secretKeyRef:
+              name: backend-db-secrets
+              key: DB_USER
+        - name: PGPORT
+          valueFrom:
+            secretKeyRef:
+              name: backend-db-secrets
+              key: DB_PORT
+        - name: PGDATABASE
+          valueFrom:
+            secretKeyRef:
+              name: backend-db-secrets
+              key: DB_DATABASE
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: backend-db-secrets
+              key: DB_PASSWORD
