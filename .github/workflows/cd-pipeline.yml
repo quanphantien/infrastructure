@@ -31,12 +31,12 @@ jobs:
         run: |
           if [ "${{ github.event.action }}" == "rollout-new-frontend" ]; then
             echo "Deploying Frontend Version: ${{ github.event.client_payload.tag }}"
-            helm upgrade --install sheduler-platform ./charts/sheduler-platform \
+            helm upgrade --install scheduler-platform ./charts/scheduler-platform \
               --reuse-values \
               --set frontend.tag="${{ github.event.client_payload.tag }}"
           elif [ "${{ github.event.action }}" == "rollout-new-backend" ]; then
             echo "Deploying Backend Version: ${{ github.event.client_payload.tag }}"
-            helm upgrade --install sheduler-platform ./charts/sheduler-platform \
+            helm upgrade --install scheduler-platform ./charts/scheduler-platform \
               --reuse-values \
               --set backend.tag="${{ github.event.client_payload.tag }}"
           fi
