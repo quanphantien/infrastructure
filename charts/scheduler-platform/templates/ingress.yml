@@ -3,14 +3,12 @@ kind: Ingress
 metadata:
   name: "{{ .Release.Name }}-ingress"
   annotations:
-    # Tells Kubernetes to use the Nginx Ingress Controller
-    kubernetes.io/ingress.class: "nginx"
     # Essential for FastAPI: strips the "/api" prefix before forwarding the request
     nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
+  ingressClassName: nginx
   rules:
-  - host: "app.quanphantien.com" # Replace with your actual domain
-    http:
+  - http:
       paths:
       # 1. Route for the Backend API
       - path: /api/?(.*)
